@@ -63,6 +63,10 @@ def main():
 
         link = f'https://farm{farm_id}.staticflickr.com/{server_id}/{pic_id}_{pic_secret}.jpg'
         print(link)
+    # Fix the links, some parsing isn't working on certain photos
+    if farm_id is '0':
+        print("wowow")
+        continue
 
         urllib.request.urlretrieve(link, f'./resources/pic{x}.jpg')
     #    pic_file = open(f'./resources/pic{x}.jpg', 'wb')
