@@ -15,14 +15,16 @@ my_key = r'507ba75534b0005df0e2d15fb2901a29'
 def setup(arg):
     ret = {}
 
-    if arg is not None:
-        ret['data_tag'] = arg
-        print(arg)
+    if arg is not None and len(arg) >= 2:
+        ret['data_tag'] = arg[1]
+        print(arg[1])
     dir = os.path.join(os.getcwd(), 'resources')
     if not os.path.exists(dir):
         os.mkdir(dir)
 
-def getListing():
+    return ret
+
+def getListing(args):
 
     requestURL = "https://api.flickr.com/services/rest"
 
@@ -32,7 +34,7 @@ def getListing():
 
     body = {
         'method': 'flickr.photos.search',
-        'tags': ['dogs'] if setup_dict['data_tag'] is None else setup_dict['data_tag'],
+        'tags': ['dogs'] if args.get('data_tag') is None else args.get('data_tag'),
         'api_key': my_key
     }
 
@@ -44,9 +46,10 @@ def getListing():
 
 def main():
     print(sys.argv)
-    setup_dict = setup(sys.argv[1])
 
-    list = getListing()
+    setup_dict = setup(sys.argv)
+
+    list = getListing(setup_dict)
 
     for x in range(0, 10):
         cur = list[x].attributes
@@ -56,17 +59,12 @@ def main():
         pic_id = cur['id'].firstChild.data
         pic_secret = cur['secret'].firstChild.data
 
-        # Fix the links, some parsing isn't working on certain photos
-        if farm_id == '0':
-            print("\nfarm/server = 0!!!\n")
-            continue
-
         link = f'https://farm{farm_id}.staticflickr.com/{server_id}/{pic_id}_{pic_secret}.jpg'
         print(link)
-    # Fix the links, some parsing isn't working on certain photos
-    if farm_id is '0':
-        print("wowow")
-        continue
+        # Fix the links, some parsing isn't working on certain photos
+        if farm_id is '0':
+            print("wowow")
+            continue
 
         urllib.request.urlretrieve(link, f'./resources/pic{x}.jpg')
     #    pic_file = open(f'./resources/pic{x}.jpg', 'wb')
