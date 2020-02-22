@@ -15,6 +15,7 @@ my_key = r'507ba75534b0005df0e2d15fb2901a29'
 def setup(arg):
     ret = {}
 
+    # NEXT UP: PIPING HOT TAGS FROM THE CMD!!!
     if arg is not None and len(arg) >= 2:
         ret['data_tag'] = arg[1]
         print(arg[1])
