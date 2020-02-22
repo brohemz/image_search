@@ -50,6 +50,7 @@ for x in range(0, 10):
 
     # Fix the links, some parsing isn't working on certain photos
     if farm_id is '0':
+        print("wowow")
         continue
 
     link = f'https://farm{farm_id}.staticflickr.com/{server_id}/{pic_id}_{pic_secret}.jpg'
