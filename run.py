@@ -45,6 +45,9 @@ def getListing(args):
     return xmldoc.getElementsByTagName('photo')
 
 
+def readTags():
+    
+
 def main():
     print(sys.argv)
 
