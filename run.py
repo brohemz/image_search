@@ -25,7 +25,9 @@ def setup(arg):
 
     return ret
 
-def getListing(args):
+def getListing(tag):
+
+    # Tag array currently has issues: PLEASE FIX
 
     requestURL = "https://api.flickr.com/services/rest"
 
@@ -35,7 +37,7 @@ def getListing(args):
 
     body = {
         'method': 'flickr.photos.search',
-        'tags': ['dogs'] if args.get('data_tag') is None else args.get('data_tag'),
+        'tags': tag,
         'api_key': my_key
     }
 
@@ -46,35 +48,44 @@ def getListing(args):
 
 
 def readTags():
-    
+    tag_file = open('./tags.hounnn', 'r')
+    lines = tag_file.readlines()
+    tag_file.close()
+    ret = []
+    for line in lines:
+        ret.append(line.strip())
+    return ret
 
-def main():
-    print(sys.argv)
-
-    setup_dict = setup(sys.argv)
-
-    list = getListing(setup_dict)
-
+def getListingLinks(list, tag):
+    ret = []
     for x in range(0, 10):
         cur = list[x].attributes
-
         farm_id = cur['farm'].firstChild.data
         server_id = cur['server'].firstChild.data
         pic_id = cur['id'].firstChild.data
         pic_secret = cur['secret'].firstChild.data
 
         link = f'https://farm{farm_id}.staticflickr.com/{server_id}/{pic_id}_{pic_secret}.jpg'
-        print(link)
+        ret.append(link)
         # Fix the links, some parsing isn't working on certain photos
         if farm_id is '0':
             print("wowow")
             continue
 
-        urllib.request.urlretrieve(link, f'./resources/pic{x}.jpg')
-    #    pic_file = open(f'./resources/pic{x}.jpg', 'wb')
-    #    pic_data = requests.get(link).content
-    #    pic_file.write(pic_data)
-    #    pic_file.close()
+        urllib.request.urlretrieve(link, f'./resources/{tag}_pic{x}.jpg')
 
+    return ret
+
+def main():
+    print(sys.argv)
+
+    setup_dict = setup(sys.argv)
+
+    # list = getListing(['dogs'] if setup_dict.get('data_tag') is None else setup_dict.get('data_tag'))
+    # print(getListingLinks(list, 'dogs'))
+    for entry in readTags():
+        list = getListing([entry])
+        print(getListingLinks(list, entry))
+    print(readTags())
 if __name__ == "__main__":
     main()
